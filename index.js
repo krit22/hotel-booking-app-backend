@@ -2,16 +2,28 @@ import express from "express"
 import dotenv from "dotenv"
 import { authRouter } from "./routes/auth.js"
 import mongoose from "mongoose"
+import { authMiddleware } from "./modules/authMiddleware.js"
+import { createHotel } from "./modules/createHotel.js"
 
 dotenv.config()
 const app=express()
-
-
 app.use(express.json())
+
+
+//non authenticated endpoints
 app.use("/api/auth",authRouter)
 
-app.listen(3000,start)
+//auth middleware
+app.use(authMiddleware)
 
+
+//authenticated endpoints
+app.post("/api/hotels",createHotel)
+
+
+
+//start server
+app.listen(3000,start)
 async function start(){
     try{
         await mongoose.connect("mongodb+srv://kritkumar2:krit123456789@krit.s7ppupj.mongodb.net/hotelsdb")
