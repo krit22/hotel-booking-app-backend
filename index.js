@@ -1,0 +1,23 @@
+import express from "express"
+import dotenv from "dotenv"
+import { authRouter } from "./routes/auth.js"
+import mongoose from "mongoose"
+
+dotenv.config()
+const app=express()
+
+
+app.use(express.json())
+app.use("/api/auth",authRouter)
+
+app.listen(3000,start)
+
+async function start(){
+    try{
+        await mongoose.connect("mongodb+srv://kritkumar2:krit123456789@krit.s7ppupj.mongodb.net/hotelsdb")
+        console.log("Conencted to database successfully...")
+        console.log(`Running the server on the port ${process.env.port}`)
+    }catch(e){
+        console.log(`an error occured: ${e}`)
+    }
+}
