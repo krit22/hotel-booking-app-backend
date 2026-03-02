@@ -2,17 +2,22 @@ import { Hotel } from "../db/schemas/hotelsSchema.js"
 
 export async function createHotel(req,res){
 
+    console.log(req.currentUser.role)
+
     //checks if owner
-    // if(req.currentUser.role!="customer"){
-    //     res.status(403).json({
-    //     "success": false,
-    //     "data": null,
-    //     "error": "FORBIDDEN"
-    //     })
-    //     return
-    // }
+    if(req.currentUser.role!="owner"){
+        res.status(403).json({
+        "success": false,
+        "data": null,
+        "error": "FORBIDDEN"
+        })
+        return
+    }
 
     const {name,description,city,country,amenities}=req.body
+
+    
+
     try{
         const currentHotel=await Hotel.create({
             owner_id:req.currentUser._id,
@@ -22,11 +27,11 @@ export async function createHotel(req,res){
             country,
             amenities,
             created_at:Date(),
-            rating:0,
+            rating:0.1,
             total_reviews:0
         })
 
-        res.json({
+        res.status(201).json({
             "success": true,
             "data": {
             "id": currentHotel._id,
@@ -43,7 +48,7 @@ export async function createHotel(req,res){
 })
 
     }catch(e){
-        res.json({
+        res.status(400).json({
             "success": false,
             "data": null,
             "error": "INVALID_REQUEST"

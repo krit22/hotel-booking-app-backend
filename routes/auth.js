@@ -15,7 +15,14 @@ authRouter.post("/login",loginHandler)
 async function signupHandler(req,res){
     let {name,email,password,role,phone}=req.body;
 
-    
+    if(!password){
+        res.status(400).json({
+        "success": false,
+        "data": null,
+        "error": "INVALID_REQUEST"
+        })
+        return
+    }
 
 
     const currentdate=new Date()
@@ -69,7 +76,7 @@ async function loginHandler(req,res){
 
     //incorrect schema
     if(!email || !password){
-       res.json({
+       res.status(400).json({
             "success": false,
             "data": null,
             "error": "INVALID_REQUEST"
@@ -84,7 +91,7 @@ async function loginHandler(req,res){
     
     //user does not exist
     if(!currentUser){
-        res.json({
+        res.status(401).json({
         "success": false,
         "data": null,
         "error": "INVALID_CREDENTIALS"
@@ -94,7 +101,7 @@ async function loginHandler(req,res){
 
     //password checking
     if(!await bcrypt.compare(password,currentUser.password)){
-        res.json({
+        res.status(401).json({
         "success": false,
         "data": null,
         "error": "INVALID_CREDENTIALS"

@@ -4,6 +4,9 @@ import { authRouter } from "./routes/auth.js"
 import mongoose from "mongoose"
 import { authMiddleware } from "./modules/authMiddleware.js"
 import { createHotel } from "./modules/createHotel.js"
+import { addRoom } from "./modules/addRoom.js"
+import { searchHotel } from "./modules/searchHotel.js"
+
 
 dotenv.config()
 const app=express()
@@ -19,6 +22,8 @@ app.use(authMiddleware)
 
 //authenticated endpoints
 app.post("/api/hotels",createHotel)
+app.post("/api/hotels/:hotelId/rooms",addRoom)
+app.get("/api/hotels",searchHotel)
 
 
 
