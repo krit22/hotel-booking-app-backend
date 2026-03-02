@@ -512,3 +512,77 @@ json
   "error": "UNAUTHORIZED"
 }
 ```
+
+
+
+## **9. POST /api/bookings/:bookingId/cancel** – *(Customer Only)*
+
+Cancel a booking
+
+**Headers:** `Authorization: Bearer <token>`
+
+### **Success Response** – `200 OK`
+
+```jsx
+{
+  "success": true,
+  "data": {
+    "id": "booking_123abc",
+    "status": "cancelled",
+    "cancelledAt": "2026-01-23T14:20:00Z"
+  },
+  "error": null
+}
+```
+
+### **Error Responses**
+
+**401 Unauthorized**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "UNAUTHORIZED"
+}
+```
+
+**403 Forbidden** – Not your booking
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "FORBIDDEN"
+}
+```
+
+**400 Bad Request** – Already cancelled
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "ALREADY_CANCELLED"
+}
+```
+
+**400 Bad Request** – Less than 24 hours before check-in
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "CANCELLATION_DEADLINE_PASSED"
+}
+```
+
+**404 Not Found**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "BOOKING_NOT_FOUND"
+}
+```
