@@ -1,4 +1,5 @@
 import { Booking } from "../db/schemas/bookingsSchema.js";
+import { Hotel } from "../db/schemas/hotelsSchema.js";
 import { Review } from "../db/schemas/reviewSchema.js";
 
 export async function reviewBooking(req, res) {
@@ -38,7 +39,6 @@ export async function reviewBooking(req, res) {
             return
         }
 
-        console.log("dsk")
         const currentReview = await Review.create({
             user_id: currentBooking.user_id,
             hotel_id: currentBooking.hotel_id,
@@ -47,7 +47,7 @@ export async function reviewBooking(req, res) {
             comment: comment,
             created_at: new Date(),
         })
-        console.log("Done...")
+
         res.status(201).json({
             "success": true,
             "data": {
@@ -60,6 +60,21 @@ export async function reviewBooking(req, res) {
                 "createdAt": new Date()
             },
             "error": null
+        })
+
+
+        //review recalculation
+        const { hotel_id } = currentBooking
+
+        const currentHotel = await Hotel.findById(hotel_id)
+        const oldRating = currentHotel.rating
+        const old_review_count = currentHotel.total_reviews
+
+        const newRating = ((oldRating * old_review_count) + rating) / (old_review_count + 1)
+
+        await Hotel.findOneAndUpdate({ _id: hotel_id }, {
+            rating: newRating,
+            total_reviews: old_review_count + 1
         })
 
     } catch (e) {

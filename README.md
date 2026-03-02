@@ -586,3 +586,103 @@ Cancel a booking
   "error": "BOOKING_NOT_FOUND"
 }
 ```
+
+## **10. POST /api/reviews** – *(Customer Only)*
+
+Submit a review for a hotel after completing a booking
+
+**Headers:** `Authorization: Bearer <token>`
+
+### **Request Body**
+
+```jsx
+{
+  "bookingId": "booking_123abc",
+  "rating": 5,
+  "comment": "Excellent service and beautiful rooms!"
+}
+```
+
+### **Success Response** – `201 Created`
+
+```jsx
+{
+  "success": true,
+  "data": {
+    "id": "review_xyz123",
+    "userId": "usr_1a2b3c4d5e",
+    "hotelId": "hotel_abc123",
+    "bookingId": "booking_123abc",
+    "rating": 5,
+    "comment": "Excellent service and beautiful rooms!",
+    "createdAt": "2026-02-19T10:00:00Z"
+  },
+  "error": null
+}
+```
+
+**NOTE:** Can only review after check-out date has passed and booking status is confirmed
+NOTE: Don’t forget to update rating and totalRatings on success :-)
+newRating = ((oldRating * totalReviews) + newRating) / (totalReviews + 1)
+
+### **Error Responses**
+
+**401 Unauthorized**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "UNAUTHORIZED"
+}
+```
+
+**403 Forbidden** – Not your booking
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "FORBIDDEN"
+}
+```
+
+**400 Bad Request** – Already reviewed
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "ALREADY_REVIEWED"
+}
+```
+
+**400 Bad Request** – Booking not eligible for review (check-out date not passed or cancelled)
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "BOOKING_NOT_ELIGIBLE"
+}
+```
+
+**400 Bad Request** – Invalid schema
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "INVALID_REQUEST"
+}
+```
+
+**404 Not Found**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "BOOKING_NOT_FOUND"
+}
+```
