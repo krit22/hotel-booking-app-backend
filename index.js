@@ -9,6 +9,7 @@ import { searchHotel } from "./modules/searchHotel.js"
 import { bookHotel } from "./modules/book-hotel.js"
 import { getBookings } from "./modules/get-bookings.js"
 import { cancelBooking } from "./modules/cancel-booking.js"
+import { reviewBooking } from "./modules/reviewBooking.js"
 
 
 dotenv.config()
@@ -29,6 +30,7 @@ app.post("/api/hotels/:hotelId/rooms", addRoom)
 app.get("/api/hotels", searchHotel)
 app.post("/api/booking", bookHotel)
 app.post("/api/bookings/:bookingId/cancel", cancelBooking)
+app.post("/api/reviews", reviewBooking)
 
 //start server
 app.listen(3000, start)
