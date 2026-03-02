@@ -346,3 +346,169 @@ Search and filter hotels (simple without pagination)
   "error": "UNAUTHORIZED"
 }
 ```
+
+## **7. POST /api/bookings** – *(Customer Only)*
+
+Create a new booking (Booking creation should be done atomically to prevent race conditions)
+
+**Headers:** `Authorization: Bearer <token>`
+
+### **Request Body**
+
+```jsx
+{
+  "roomId": "room_xyz789",
+  "checkInDate": "2026-02-15",
+  "checkOutDate": "2026-02-18",
+  "guests": 2
+}
+```
+
+### **Success Response** – `201 Created`
+
+```jsx
+{
+  "success": true,
+  "data": {
+    "id": "booking_123abc",
+    "userId": "usr_1a2b3c4d5e",
+    "roomId": "room_xyz789",
+    "hotelId": "hotel_abc123",
+    "checkInDate": "2026-02-15",
+    "checkOutDate": "2026-02-18",
+    "guests": 2,
+    "totalPrice": 15000,
+    "status": "confirmed",
+    "bookingDate": "2026-01-22T10:30:00Z"
+  },
+  "error": null
+}
+```
+
+**Total Price Calculation:**
+
+```jsx
+nights = (new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24)
+totalPrice = nights * pricePerNight
+```
+
+### **Error Responses**
+
+**401 Unauthorized**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "UNAUTHORIZED"
+}
+```
+
+**403 Forbidden** – Owner trying to book their own hotel
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "FORBIDDEN"
+}
+```
+
+**400 Bad Request** – Room not available (overlapping booking exists)
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "ROOM_NOT_AVAILABLE"
+}
+```
+
+**400 Bad Request** – Past date booking
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "INVALID_DATES"
+}
+```
+
+**400 Bad Request** – Guests capacity
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "INVALID_CAPACITY"
+}
+```
+
+**400 Bad Request** – Invalid schema
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "INVALID_REQUEST"
+}
+```
+
+**404 Not Found**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "ROOM_NOT_FOUND"
+}
+```
+
+## **8. GET /api/bookings - (Customer only)**
+
+Get all bookings for current user
+
+**Headers:** `Authorization: Bearer <token>`
+
+**Query Parameters (optional):**
+
+- `status` – Filter by status (confirmed/cancelled)
+
+### **Success Response** – `200 OK`
+
+json
+
+```jsx
+{
+  "success": true,
+  "data": [
+    {
+      "id": "booking_123abc",
+      "roomId": "room_xyz789",
+      "hotelId": "hotel_abc123",
+      "hotelName": "Grand Palace Hotel",
+      "roomNumber": "101",
+      "roomType": "Deluxe",
+      "checkInDate": "2026-02-15",
+      "checkOutDate": "2026-02-18",
+      "guests": 2,
+      "totalPrice": 15000,
+      "status": "confirmed",
+      "bookingDate": "2026-01-22T10:30:00Z"
+    }
+  ],
+  "error": null
+}
+```
+
+### **Error Responses**
+
+**401 Unauthorized**
+
+```jsx
+{
+  "success": false,
+  "data": null,
+  "error": "UNAUTHORIZED"
+}
+```

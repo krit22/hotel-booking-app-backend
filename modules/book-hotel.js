@@ -15,14 +15,6 @@ export async function bookHotel(req, res) {
 
     let { roomId, checkInDate, checkOutDate, guests } = req.body;
 
-    // if (!guests || !checkOutDate || !roomId || !checkInDate) {
-    //     res.json({
-    //         "success": false,
-    //         "data": null,
-    //         "error": "INVALID_REQUEST"
-    //     })
-    //     return
-    // }
 
     checkInDate = new Date(checkInDate)
     checkOutDate = new Date(checkOutDate)
