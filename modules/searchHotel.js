@@ -3,8 +3,6 @@ import { Room } from "../db/schemas/roomsSchema.js";
 
 export async function searchHotel(req,res){
 
-    console.log("runnng...")
-
     let {city,country,minPrice,maxPrice,minRating}=req.query;
     if(!minPrice)
         minPrice=0
@@ -26,8 +24,6 @@ export async function searchHotel(req,res){
     const currentHotels=await Hotel.find(filter)
     let finalHotels=[]
 
-
-    //console.log(currentHotels)
     
     for(let i=0;i<currentHotels.length;i++){
 
@@ -59,9 +55,6 @@ export async function searchHotel(req,res){
                 delete obj.created_at
                 delete obj.__v
                 obj.minPricePerNight=minPrice
-
-                console.log(obj)
-
                 finalHotels.push(obj)
             }
         }
@@ -69,7 +62,8 @@ export async function searchHotel(req,res){
 
     res.json({
         success:"true",
-        data:finalHotels
+        data:finalHotels,
+        error:null
     })
 
 }
